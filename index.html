@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A futuristic, ultra-modern and feature-packed To-Do List application crafted with glassmorphism and productivity analytics.">
+    <title>TaskMaster Pro | Om Aditya • SkillCraft Task 04</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Ambient Glowing Background Elements -->
+    <div class="ambient-glow glow-1" aria-hidden="true"></div>
+    <div class="ambient-glow glow-2" aria-hidden="true"></div>
+    <div class="ambient-glow glow-3" aria-hidden="true"></div>
+
+    <!-- Celebration Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Main Application Container -->
+    <main class="todo-container" id="app-container">
+
+        <!-- Top Navigation / Controls Bar -->
+        <div class="top-nav-bar">
+            <div class="brand-pill">
+                <span class="pulse-indicator"></span>
+                <span>SkillCraft Tech &bull; Task 04</span>
+            </div>
+
+            <div class="top-actions">
+                <!-- Sound Toggle Button -->
+                <button type="button" id="sound-toggle-btn" class="icon-toggle-btn" title="Toggle Sound Effects" aria-label="Toggle Sound Effects">
+                    <span id="sound-icon">🔊</span>
+                </button>
+
+                <!-- Theme Toggle Button -->
+                <button type="button" id="theme-toggle-btn" class="icon-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
+                    <span id="theme-icon">✨</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="greeting-badge" id="greeting-text">Welcome back 👋</div>
+                <h1 class="gradient-title">My To-Do List</h1>
+                <p class="header-subtitle" id="current-datetime">Loading date & time...</p>
+            </div>
+
+            <!-- Productivity Progress Bar -->
+            <div class="productivity-card">
+                <div class="progress-info">
+                    <div class="progress-labels">
+                        <span class="progress-title">Daily Progress</span>
+                        <span class="progress-percentage" id="progress-percentage">0%</span>
+                    </div>
+                    <span class="progress-caption" id="progress-caption">Let's get things done today!</span>
+                </div>
+                <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Add Task Section -->
+        <section class="add-task-section" aria-label="Add Task">
+            <div class="card-glass input-card">
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <span class="input-icon">✨</span>
+                        <input
+                            type="text"
+                            id="task-input"
+                            placeholder="What would you like to achieve today?"
+                            maxlength="120"
+                            autocomplete="off"
+                        >
+                        <span class="shortcut-badge" title="Press Enter to Add">↵ Enter</span>
+                    </div>
+
+                    <button id="add-task-btn" type="button">
+                        <span class="btn-icon">+</span>
+                        <span class="btn-text">Add Task</span>
+                    </button>
+                </div>
+
+                <!-- Priority & Category Selectors -->
+                <div class="tag-selectors">
+                    <!-- Priority Selector -->
+                    <div class="selector-row">
+                        <span class="selector-label">Priority:</span>
+                        <div class="priority-chips" id="priority-selector">
+                            <button type="button" class="priority-chip" data-priority="low">
+                                <span class="chip-dot dot-low"></span> Low
+                            </button>
+                            <button type="button" class="priority-chip active" data-priority="medium">
+                                <span class="chip-dot dot-medium"></span> Medium
+                            </button>
+                            <button type="button" class="priority-chip" data-priority="high">
+                                <span class="chip-dot dot-high"></span> High 🔥
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Category Selector -->
+                    <div class="selector-row">
+                        <span class="selector-label">Category:</span>
+                        <div class="category-chips" id="category-selector">
+                            <button type="button" class="cat-chip active" data-cat="General">📌 General</button>
+                            <button type="button" class="cat-chip" data-cat="Work">💼 Work</button>
+                            <button type="button" class="cat-chip" data-cat="Study">📚 Study</button>
+                            <button type="button" class="cat-chip" data-cat="Personal">🎯 Personal</button>
+                            <button type="button" class="cat-chip" data-cat="Ideas">💡 Ideas</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Inputs -->
+                <div class="schedule-inputs">
+                    <div class="date-input">
+                        <div class="label-with-shortcuts">
+                            <label for="task-date">📅 Date</label>
+                            <div class="quick-date-pills">
+                                <button type="button" class="quick-date-btn" id="btn-quick-today">Today</button>
+                                <button type="button" class="quick-date-btn" id="btn-quick-tomorrow">Tomorrow</button>
+                            </div>
+                        </div>
+                        <input
+                            type="date"
+                            id="task-date"
+                        >
+                    </div>
+
+                    <div class="time-input">
+                        <label for="task-time">⏰ Time</label>
+                        <input
+                            type="time"
+                            id="task-time"
+                        >
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search & Quick Filter Controls -->
+        <section class="controls-toolbar" aria-label="Task Controls">
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input
+                    type="text"
+                    id="search-input"
+                    placeholder="Search tasks..."
+                    autocomplete="off"
+                >
+                <button type="button" id="clear-search-btn" class="clear-search-btn" title="Clear Search" style="display: none;">✕</button>
+            </div>
+
+            <div class="sort-selector">
+                <span class="sort-icon">⇅</span>
+                <select id="sort-select" aria-label="Sort tasks">
+                    <option value="newest">Sort: Newest First</option>
+                    <option value="oldest">Sort: Oldest First</option>
+                    <option value="priority">Sort: By Priority</option>
+                    <option value="date">Sort: By Due Date</option>
+                    <option value="alphabetical">Sort: A to Z</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Task Filters Tabs -->
+        <section class="filter-section" aria-label="Filter Tasks">
+            <div class="filter-tabs">
+                <button
+                    class="filter-btn active"
+                    data-filter="all"
+                    type="button"
+                >
+                    All <span class="filter-badge" id="badge-all">0</span>
+                </button>
+
+                <button
+                    class="filter-btn"
+                    data-filter="pending"
+                    type="button"
+                >
+                    Pending <span class="filter-badge" id="badge-pending">0</span>
+                </button>
+
+                <button
+                    class="filter-btn"
+                    data-filter="completed"
+                    type="button"
+                >
+                    Completed <span class="filter-badge" id="badge-completed">0</span>
+                </button>
+            </div>
+
+            <!-- Clear Completed Tasks Button -->
+            <button type="button" id="clear-completed-btn" class="clear-completed-btn" title="Remove all completed tasks">
+                <span>🧹</span> Clear Completed
+            </button>
+        </section>
+
+        <!-- Task Statistics -->
+        <section class="task-stats" aria-label="Statistics">
+            <div class="stat-box stat-total">
+                <div class="stat-icon-wrapper">📋</div>
+                <div class="stat-info">
+                    <span id="total-count">0</span>
+                    <small>Total Tasks</small>
+                </div>
+            </div>
+
+            <div class="stat-box stat-pending">
+                <div class="stat-icon-wrapper">⏳</div>
+                <div class="stat-info">
+                    <span id="pending-count">0</span>
+                    <small>Pending</small>
+                </div>
+            </div>
+
+            <div class="stat-box stat-completed">
+                <div class="stat-icon-wrapper">✅</div>
+                <div class="stat-info">
+                    <span id="completed-count">0</span>
+                    <small>Completed</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- Task List Section -->
+        <section class="task-section" aria-label="Task List">
+            <div id="task-list" class="task-list">
+                <!-- Tasks will be dynamically rendered here -->
+            </div>
+
+            <!-- Empty State -->
+            <div
+                id="empty-state"
+                class="empty-state"
+            >
+                <div class="empty-icon-wrap">
+                    <div class="empty-glow"></div>
+                    <div class="empty-icon">✨</div>
+                </div>
+
+                <h2>No tasks yet</h2>
+
+                <p>
+                    Add your first task above to start your productive day!
+                </p>
+
+                <button type="button" class="empty-quick-add" id="empty-focus-btn">
+                    + Create a Task
+                </button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-divider"></div>
+            <p>
+                Designed &amp; Developed with <span class="heart-pulse">❤️</span> by
+                <strong>Om Aditya</strong>
+            </p>
+            <p class="footer-sub">SkillCraft Technology Internship &bull; Task 04</p>
+        </footer>
+
+    </main>
+
+    <!-- Custom Confirmation Modal -->
+    <div id="confirm-modal" class="modal-overlay" aria-hidden="true" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-icon" id="modal-icon">⚠️</div>
+            <h3 id="modal-title">Delete Task?</h3>
+            <p id="modal-message">Are you sure you want to delete this task? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button type="button" id="modal-cancel-btn" class="modal-btn modal-cancel">Cancel</button>
+                <button type="button" id="modal-confirm-btn" class="modal-btn modal-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
